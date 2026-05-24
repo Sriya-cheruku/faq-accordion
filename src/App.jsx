@@ -27,48 +27,62 @@ function App() {
   const [openIndex, setOpenIndex] = useState(0);
 
   const handleToggle = (index) => {
-    setOpenIndex(openIndex === index ? null : index);
+    setOpenIndex((currentIndex) => (currentIndex === index ? null : index));
   };
 
   return (
     <main className="app">
-      <section className="faq-card">
+      <section className="faq-card" aria-labelledby="faq-title">
         <div className="faq-header">
-          <img src="/images/icon-star.svg" alt="" className="star-icon" />
-          <h1>FAQs</h1>
+          <img
+            src="/images/icon-star.svg"
+            alt=""
+            aria-hidden="true"
+            className="star-icon"
+          />
+          <h1 id="faq-title">FAQs</h1>
         </div>
 
         <div className="faq-list">
-          {faqs.map((faq, index) => (
-            <article className="faq-item" key={index}>
-              <button
-                className="faq-question"
-                onClick={() => handleToggle(index)}
-                aria-expanded={openIndex === index}
-                aria-controls={`faq-answer-${index}`}
-              >
-                <span>{faq.question}</span>
-                <img
-                  src={
-                    openIndex === index
-                      ? "/images/icon-minus.svg"
-                      : "/images/icon-plus.svg"
-                  }
-                  alt=""
-                  className="faq-icon"
-                />
-              </button>
+          {faqs.map((faq, index) => {
+            const isOpen = openIndex === index;
 
-              {openIndex === index && (
-                <div
-                  className="faq-answer"
-                  id={`faq-answer-${index}`}
+            return (
+              <article className="faq-item" key={faq.question}>
+                <button
+                  type="button"
+                  id={`faq-question-${index}`}
+                  className="faq-question"
+                  onClick={() => handleToggle(index)}
+                  aria-expanded={isOpen}
+                  aria-controls={`faq-answer-${index}`}
                 >
-                  <p>{faq.answer}</p>
-                </div>
-              )}
-            </article>
-          ))}
+                  <span>{faq.question}</span>
+                  <img
+                    src={
+                      isOpen
+                        ? "/images/icon-minus.svg"
+                        : "/images/icon-plus.svg"
+                    }
+                    alt=""
+                    aria-hidden="true"
+                    className="faq-icon"
+                  />
+                </button>
+
+                {isOpen && (
+                  <div
+                    className="faq-answer"
+                    id={`faq-answer-${index}`}
+                    role="region"
+                    aria-labelledby={`faq-question-${index}`}
+                  >
+                    <p>{faq.answer}</p>
+                  </div>
+                )}
+              </article>
+            );
+          })}
         </div>
       </section>
     </main>
